@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block page_title %}Add New Patient{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Add New Patient</h2>
+
+    <form method="POST" action="{{ url_for('add_patient') }}" onsubmit="return validatePhoneNumber('contact_number')">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">First Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Surname *</label>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth *</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="country_code">Country Code *</label>
+                <select id="country_code" name="country_code" required>
+                    <option value="">Select Country Code</option>
+                    {% for country in country_codes %}
+                    <option value="{{ country.code }}">{{ country.flag }} {{ country.name }} ({{ country.code }})</option>
+                    {% endfor %}
+                </select>
+                <small class="form-help">Select your country code</small>
+            </div>
+
+            <div class="form-group">
+                <label for="contact_number">Phone Number *</label>
+                <input type="tel" id="contact_number" name="contact_number" 
+                       placeholder="e.g., 812345678"
+                       pattern="[0-9]{7,15}"
+                       title="7-15 digits only"
+                       maxlength="15"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <small class="form-help">7-15 digits only (e.g., 812345678)</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Patient</button>
+        <a href="{{ url_for('patients') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<!-- Custom Alert Container -->
+<div id="custom-alert" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                             background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+                             z-index: 10000; min-width: 350px; text-align: center; border: 2px solid var(--light-purple);">
+    <p id="alert-message" style="margin-bottom: 20px; font-size: 16px; color: var(--text-dark);"></p>
+    <button onclick="closeAlert()" style="padding: 12px 25px; background: var(--primary-purple); color: white; 
+                                         border: none; border-radius: 8px; cursor: pointer; font-size: 16px;
+                                         transition: all 0.3s ease;">
+        OK
+    </button>
+</div>
+<div id="alert-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                              background: rgba(0,0,0,0.7); z-index: 9999;"></div>
+{% endblock %}

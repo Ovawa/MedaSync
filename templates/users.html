@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>User Accounts</h2>
+    <a href="{{ url_for('add_user') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New User
+    </a>
+</div>
+
+{% if users %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>
+                {% if user.is_admin %}
+                <span class="badge admin-badge">Admin</span>
+                {% else %}
+                <span class="badge user-badge">User</span>
+                {% endif %}
+            </td>
+            <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td class="actions">
+                {% if user.username != 'admin' %}
+                <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-sm btn-danger" 
+                   onclick="return confirm('Are you sure you want to delete this user?');">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+                {% else %}
+                <span class="text-muted">System Admin</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="no-data">No users found.</p>
+{% endif %}
+{% endblock %}

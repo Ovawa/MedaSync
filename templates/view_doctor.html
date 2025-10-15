@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block page_title %}Doctor Details - Dr. {{ doctor.name }} {{ doctor.surname }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Doctor Details: {{ doctor.id }} - Dr. {{ doctor.name }} {{ doctor.surname }}</h2>
+    <div>
+        <a href="{{ url_for('edit_doctor', doctor_id=doctor.id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Doctor
+        </a>
+        {% if is_admin %}
+        <a href="{{ url_for('delete_doctor', doctor_id=doctor.id) }}" class="btn btn-danger" 
+           onclick="return confirm('Are you sure you want to delete this doctor?');">
+            <i class="fas fa-trash"></i> Delete Doctor
+        </a>
+        {% endif %}
+        <a href="{{ url_for('doctors') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Doctors
+        </a>
+    </div>
+</div>
+
+<div class="form-container">
+    <div class="doctor-details">
+        <div class="detail-row">
+            <div class="detail-item">
+                <strong>Name:</strong> Dr. {{ doctor.name }} {{ doctor.surname }}
+            </div>
+            <div class="detail-item">
+                <strong>Specialization:</strong> {{ doctor.specialization }}
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-item">
+                <strong>Contact:</strong> {{ doctor.country_code }}{{ doctor.contact_number }}
+            </div>
+            <div class="detail-item">
+                <strong>Email:</strong> {{ doctor.email or 'Not provided' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-section">
+    <h2>Appointments (All)</h2>
+    {% if appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Diagnosis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in appointments %}
+            <tr>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.time }}</td>
+                <td>{{ appt.patient.name }} {{ appt.patient.surname }}</td>
+                <td>{{ appt.diagnosis[:50] }}{% if appt.diagnosis|length > 50 %}...{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">No appointments found for this doctor.</p>
+    {% endif %}
+</div>
+
+<div class="dashboard-section">
+    <h2>Upcoming Appointments</h2>
+    {% if upcoming_appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Diagnosis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in upcoming_appointments %}
+            <tr>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.time }}</td>
+                <td>{{ appt.patient.name }} {{ appt.patient.surname }}</td>
+                <td>{{ appt.diagnosis[:50] }}{% if appt.diagnosis|length > 50 %}...{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">No upcoming appointments for this doctor.</p>
+    {% endif %}
+</div>
+
+<div class="dashboard-section">
+    <h2>Past Appointments</h2>
+    {% if past_appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Diagnosis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in past_appointments %}
+            <tr>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.time }}</td>
+                <td>{{ appt.patient.name }} {{ appt.patient.surname }}</td>
+                <td>{{ appt.diagnosis[:50] }}{% if appt.diagnosis|length > 50 %}...{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">No past appointments found for this doctor.</p>
+    {% endif %}
+</div>
+{% endblock %}

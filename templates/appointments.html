@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block page_title %}Appointment Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Appointment Schedule</h2>
+    <a href="{{ url_for('add_appointment') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Schedule New Appointment
+    </a>
+</div>
+
+<div class="search-bar">
+    <form method="GET" action="{{ url_for('appointments') }}">
+        <input type="text" name="search" placeholder="Search appointments by ID, patient, doctor, or diagnosis..." value="{{ search_query }}">
+        <button type="submit"><i class="fas fa-search"></i> Search</button>
+        {% if search_query %}
+            <a href="{{ url_for('appointments') }}" class="btn btn-secondary">Clear Search</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if appointments %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>End Time</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Specialization</th>
+            <th>Diagnosis</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appt in appointments %}
+        <tr>
+            <td><strong>{{ appt.id }}</strong></td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.time }}</td>
+            <td>{{ appt.duration }} min</td>
+            <td>
+                {% set start_time = appt.time.split(':') %}
+                {% set hours = start_time[0] | int %}
+                {% set minutes = start_time[1] | int %}
+                {% set total_minutes = hours * 60 + minutes + appt.duration %}
+                {% set end_hours = (total_minutes // 60) % 24 %}
+                {% set end_minutes = total_minutes % 60 %}
+                {{ "%02d:%02d" | format(end_hours, end_minutes) }}
+            </td>
+            <td>{{ appt.patient.id }} - {{ appt.patient.name }} {{ appt.patient.surname }}</td>
+            <td>{{ appt.doctor.id }} - Dr. {{ appt.doctor.name }} {{ appt.doctor.surname }}</td>
+            <td>{{ appt.doctor.specialization }}</td>
+            <td>{{ appt.diagnosis[:50] }}{% if appt.diagnosis|length > 50 %}...{% endif %}</td>
+            <td class="actions">
+                <a href="{{ url_for('edit_appointment', appointment_id=appt.id) }}" class="btn btn-sm" style="background:var(--light-purple); color:white;">Edit</a>
+                <a href="{{ url_for('delete_appointment', appointment_id=appt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this appointment?');">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="no-data">No appointments found. {% if search_query %}Try a different search term.{% else %}<a href="{{ url_for('add_appointment') }}">Schedule your first appointment</a>.{% endif %}</p>
+{% endif %}
+{% endblock %}

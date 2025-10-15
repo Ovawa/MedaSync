@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block page_title %}Edit Appointment - {{ appt.id }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Edit Appointment: {{ appt.id }}</h2>
+
+    <form method="POST" action="{{ url_for('edit_appointment', appointment_id=appt.id) }}" onsubmit="return validateAppointmentForm()">
+        <div id="availability_status" class="availability-status"></div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="patient_id">Patient *</label>
+                <select id="patient_id" name="patient_id" required>
+                    <option value="">Select Patient</option>
+                    {% for patient in patients %}
+                    <option value="{{ patient.id }}" {% if appt.patient_id == patient.id %}selected{% endif %}>{{ patient.id }} - {{ patient.name }} {{ patient.surname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="doctor_id">Doctor *</label>
+                <select id="doctor_id" name="doctor_id" required>
+                    <option value="">Select Doctor</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}" {% if appt.doctor_id == doctor.id %}selected{% endif %}>{{ doctor.id }} - Dr. {{ doctor.name }} {{ doctor.surname }} ({{ doctor.specialization }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date">Date *</label>
+                <input type="date" id="date" name="date" value="{{ appt.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="time">Time *</label>
+                <div class="time-input-container">
+                    <input type="text" id="time" name="time" value="{{ appt.time }}"
+                           placeholder="HH:MM" pattern="[0-9]{2}:[0-9]{2}"
+                           title="Enter time in HH:MM format (24-hour)">
+                    <small class="form-help">Or select from dropdown</small>
+                    <select id="time_dropdown" onchange="document.getElementById('time').value = this.value">
+                        <option value="">Select Time</option>
+                        {% for time_slot in time_slots %}
+                        <option value="{{ time_slot }}" {% if appt.time == time_slot %}selected{% endif %}>{{ time_slot }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="duration">Duration (minutes) *</label>
+                <input type="number" id="duration" name="duration" min="1" max="240" value="{{ appt.duration }}" required>
+                <small class="form-help">Enter duration in minutes (1-240)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="end_time">End Time</label>
+                <input type="text" id="end_time" readonly class="readonly-field">
+                <small class="form-help">Calculated automatically</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="diagnosis">Diagnosis Notes</label>
+            <textarea id="diagnosis" name="diagnosis" rows="4">{{ appt.diagnosis }}</textarea>
+        </div>
+
+        <button type="submit" id="submit_btn" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('appointments') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
