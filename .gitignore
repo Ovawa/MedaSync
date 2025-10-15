@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environments
+venv/
+.env
+.env.*
+
+# SQLite database
+instance/*.db
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Byte-compiled
+*.egg-info/
+
+# OS files
+Thumbs.db
+
+# Ignore environment-specific files
+.venv/
+.idea/
